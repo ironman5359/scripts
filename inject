@@ -18,9 +18,4 @@ export AWS_ACCESS_KEY_ID=$(echo "op://work/esoiwkvpxtkxecf3ojk7bk3tmu/AWS ACCESS
 export AWS_SECRET_ACCESS_KEY=$(echo "op://work/esoiwkvpxtkxecf3ojk7bk3tmu/AWS SECRET ACCESS KEY"| op inject)
 export AWS_DEFAULT_REGION=us-east-1
 
-if [ ! -d .terraform ]; then
-  echo "Initializing Terraform"
-  terraform init
-fi
-
 "$@"
