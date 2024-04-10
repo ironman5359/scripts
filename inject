@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# this script injects the 1password secrets into environment variables
+
+VAULT="github-rayamono-icecream"
+RAYA_ACCOUNT="rayatheapp.1password.com"
+
+# Sign into the Raya account
+# op signin --account rayatheapp.1password.com
+ITEMS=$(op item ls --account $RAYA_ACCOUNT --vault $VAULT --format json | jq -r '.[].id')
+
+
+for i in $ITEMS; do
+  eval "$(op item get "$i" --account $RAYA_ACCOUNT --vault $VAULT --format json | jq -r '.fields[] | {(.label): .value} | to_entries | map("export TF_VAR_\(.key)=\(.value|tostring|@sh)")|.[]')"
+done
+
+export AWS_ACCESS_KEY_ID=$(echo "op://work/esoiwkvpxtkxecf3ojk7bk3tmu/AWS ACCESS KEY ID" | op inject)
+export AWS_SECRET_ACCESS_KEY=$(echo "op://work/esoiwkvpxtkxecf3ojk7bk3tmu/AWS SECRET ACCESS KEY"| op inject)
+export AWS_DEFAULT_REGION=us-east-1
+
+if [ ! -d .terraform ]; then
+  echo "Initializing Terraform"
+  terraform init
+fi
+
+"$@"
