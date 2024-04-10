@@ -2,8 +2,7 @@
 
 # this script injects the 1password secrets into environment variables
 
-VAULT="github-rayamono-icecream"
-RAYA_ACCOUNT="rayatheapp.1password.com"
+source $HOME/.local/lib/common
 
 # Sign into the Raya account
 # op signin --account rayatheapp.1password.com
