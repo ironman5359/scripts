@@ -4,13 +4,10 @@
 
 source $HOME/.local/lib/common
 
-# Sign into the Raya account
-# op signin --account rayatheapp.1password.com
-ITEMS=$(op item ls --account $RAYA_ACCOUNT --vault $VAULT --format json | jq -r '.[].id')
-
+ITEMS=$(op item ls --account $ACCOUNT --vault $VAULT --format json | jq -r '.[].id')
 
 for i in $ITEMS; do
-  eval "$(op item get "$i" --account $RAYA_ACCOUNT --vault $VAULT --format json | jq -r '.fields[] | {(.label): .value} | to_entries | map("export TF_VAR_\(.key)=\(.value|tostring|@sh)")|.[]')"
+  eval "$(op item get "$i" --account $ACCOUNT --vault $VAULT --format json | jq -r '.fields[] | {(.label): .value} | to_entries | map("export TF_VAR_\(.key)=\(.value|tostring|@sh)")|.[]')"
 done
 
 export AWS_ACCESS_KEY_ID=$(echo "op://work/esoiwkvpxtkxecf3ojk7bk3tmu/AWS ACCESS KEY ID" | op inject)
